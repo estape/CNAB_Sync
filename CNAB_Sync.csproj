@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.105.1" />
+    <PackageReference Include="Photino.NET" Version="4.0.16" />
+  </ItemGroup>
+
+  <!-- Esta é a parte que garante que o HTML vá para a pasta do executável -->
+  <ItemGroup>
+    <Content Include="View/wwwroot/**/*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

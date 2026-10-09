@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>CNAB Sync - Desktop</title>
+    <link id="theme-stylesheet" rel="stylesheet" href="css/light/styles.css">
+</head>
+
+<body>
+
+    <!-- MENU SUPERIOR -->
+    <nav class="menubar">
+        <div class="menu-item">
+            Arquivo
+            <div class="dropdown">
+                <a id="menuTopNovo" href="#novo">Novo...</a>
+                <a id="menuTopSalvar" href="#salvar">Salvar...</a>
+                <a id="menuTopCarregar" href="#carregar">Carregar...</a>
+                <a id="menuTopImportarCNAB" href="#importarCNAB">Importar CNAB...</a>
+                <a id="menuTopExportarCNAB" href="#exportarCNAB">Exportar CNAB...</a>
+            </div>
+        </div>
+        <div class="menu-item">
+            Editar
+            <div class="dropdown">
+                <a id="menuTopEditorArquivo" href="#editorArquivo">Editor de Arquivo...</a>
+            </div>
+        </div>
+        <div class="menu-item">
+            Exportar
+            <div class="dropdown">
+                <a id="menuTopExcel" href="#excel">Para Excel</a>
+                <a id="menuTopCSV" href="#csv">Para CSV</a>
+            </div>
+        </div>
+        <div class="menu-item">
+            Sobre
+        </div>
+        <div class="menu-item" style="margin-left: auto; cursor: pointer;" id="btnSwitchTheme">
+            Alternar Tema
+        </div>
+    </nav>
+
+    <!-- LAYOUT DIVIDIDO (MASTER-DETAIL) -->
+    <div class="app-layout">
+
+        <!-- MESTRE: LISTA DE CLIENTES -->
+        <aside class="master-panel">
+            <div class="panel-header">Clientes</div>
+            <div class="client-list">
+            </div>
+        </aside>
+
+        <!-- DETALHES: DADOS DO CONTRATO -->
+        <main class="detail-panel">
+
+            <!-- METADE ESQUERDA (Dados que já temos) -->
+            <div class="detail-left">
+                <div style="display: flex; gap: 1rem; width: 100%;">
+                    <div class="info-card" style="flex: 1;">
+                        <div class="card-header">Data de emissao</div>
+                        <div class="card-body value-highlight">15/09/26</div>
+                    </div>
+
+                    <div class="info-card" style="flex: 1;">
+                        <div class="card-header">Total de parcelas do CNAB</div>
+                        <div id="totalArquivoCNAB" class="card-body value-highlight">R$ 0,00</div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="card-header">Total de parcelas do cliente</div>
+                    <div id="totalParcelasCliente" class="card-body value-highlight money">R$ 0,00</div>
+                </div>
+
+                <div class="info-card">
+                    <div class="card-header">Parcelas do contrato</div>
+                    <div id="parcelasContrato" class="card-body">
+                    </div>
+                </div>
+            </div>
+
+            <!-- METADE DIREITA (Espaço Reservado) -->
+            <div class="detail-right">
+                <div class="info-card placeholder-card">
+                    <div class="card-body"
+                        style="text-align: center; color: var(--text-label); opacity: 0.6; font-size: 13px;">
+                        <br><br>
+                        <strong>Área Reservada</strong><br><br>
+                        O conteúdo do painel direito <br>será definido em breve.
+                        <br><br><br>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- NOVA BARRA DE STATUS (UX Desktop) -->
+    <footer class="status-bar">
+        <span class="status-msg">Pronto</span>
+        <div class="status-info">
+            <span>Registros: 3</span>
+            <span class="divider">|</span>
+            <span>Modo: CNAB 444</span>
+        </div>
+    </footer>
+    <script src="js/fronthandler.js"></script>
+</body>
+
+</html>

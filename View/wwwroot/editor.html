@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor CNAB 444</title>
+    <link id="theme-style" rel="stylesheet" href="css/light/styles.css">
+</head>
+
+<body>
+    <div class="editor-layout">
+        <div class="editor-header">
+            <div class="editor-title">Editor de Título CNAB</div>
+            <div>
+                <button type="button" class="btn-secondary"
+                    onclick="window.external.sendMessage('closeEditor')">Cancelar</button>
+                <button type="button" class="btn-primary" onclick="saveData()">Salvar Alterações</button>
+                <button type="button" class="btn-primary" style="background-color: var(--money); margin-left: 8px;"
+                    onclick="window.external.sendMessage('menuTopSalvar')">Salvar no PC</button>
+            </div>
+        </div>
+
+        <form id="cnabForm">
+            <!-- GROUP: Dados do Sacado -->
+            <div class="info-card">
+                <div class="card-title">Dados do Sacado (Cliente)</div>
+                <div class="form-section">
+                    <div class="form-group"><label class="form-label">Nome</label><input type="text" id="Nome"
+                            class="form-control"></div>
+                    <div class="form-group"><label class="form-label">CPF/CNPJ</label><input type="text" id="CPF_CNPJ"
+                            class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Tipo Inscrição</label><input type="text"
+                            id="IdentTipoInscricaoSacado" class="form-control"></div>
+                    <div class="form-group" style="grid-column: 1 / -1;"><label class="form-label">Endereço
+                            Completo</label><input type="text" id="EnderecoCompleto" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">CEP</label><input type="text" id="CEP"
+                            class="form-control"></div>
+                </div>
+            </div>
+
+            <!-- GROUP: Identificação & Documento -->
+            <div class="info-card">
+                <div class="card-title">Identificação & Documento</div>
+                <div class="form-section">
+                    <div class="form-group"><label class="form-label">Nº Controle Participante</label><input type="text"
+                            id="NumeroControleParticipante" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Nº Documento</label><input type="text"
+                            id="NumeroDocumento" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Ident. Ocorrência</label><input type="text"
+                            id="IdentificacaoOcorrencia" class="form-control"></div>
+                    <div class="form-group" style="grid-column: 1 / -1;"><label class="form-label">Chave da
+                            Nota</label><input type="text" id="ChaveNota" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Cedente</label><input type="text" id="Cedente"
+                            class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Nº NF Duplicata</label><input type="text"
+                            id="NumeroNotaFiscalDuplicata" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Série NF Duplicata</label><input type="text"
+                            id="NumeroSerieNotaFiscalDuplicata" class="form-control"></div>
+                </div>
+            </div>
+
+            <!-- GROUP: Valores & Juros -->
+            <div class="info-card">
+                <div class="card-title">Valores & Juros</div>
+                <div class="form-section">
+                    <div class="form-group"><label class="form-label">Valor Pago</label><input type="text"
+                            id="ValorPago" class="form-control money"></div>
+                    <div class="form-group"><label class="form-label">Valor Presente Parcela</label><input type="text"
+                            id="ValorPresenteParcela" class="form-control money"></div>
+                    <div class="form-group"><label class="form-label">Total Parcelas Cliente</label><input type="text"
+                            id="TotalParcelasCliente" class="form-control money" readonly></div>
+                    <div class="form-group"><label class="form-label">Valor Abatimento</label><input type="text"
+                            id="ValorAbatimento" class="form-control money"></div>
+                    <div class="form-group"><label class="form-label">Taxa de Juros</label><input type="text"
+                            id="TaxaJuros" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Juros / Mora</label><input type="text"
+                            id="JurosMora" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Tipo Juros</label><input type="text"
+                            id="TipoJuros" class="form-control"></div>
+                </div>
+            </div>
+
+            <!-- GROUP: Datas -->
+            <div class="info-card">
+                <div class="card-title">Datas</div>
+                <div class="form-section">
+                    <div class="form-group"><label class="form-label">Data Emissão</label><input type="text"
+                            id="DatasEmissao" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Data Vencimento</label><input type="text"
+                            id="DataVencimentoTitulo" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Data Liquidação</label><input type="text"
+                            id="DataLiquidacao" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Data Carência</label><input type="text"
+                            id="DataCarencia" class="form-control"></div>
+                </div>
+            </div>
+
+            <!-- GROUP: Bancário & Operacional -->
+            <div class="info-card">
+                <div class="card-title">Bancário & Operacional</div>
+                <div class="form-section">
+                    <div class="form-group"><label class="form-label">Número do Banco</label><input type="text"
+                            id="NumeroBanco" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Agência Depositária</label><input type="text"
+                            id="AgenciaDepositaria" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Banco Encarregado</label><input type="text"
+                            id="BancoEncarregadoCobranca" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Ident. Título Banco</label><input type="text"
+                            id="IdentificacaoTituloBanco" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Dígito Nosso Número</label><input type="text"
+                            id="DigitoNossoNumero" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Modalidade Op.</label><input type="text"
+                            id="ModalidadeOperacao" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Natureza Op.</label><input type="text"
+                            id="NaturezaOperacao" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Origem Recurso</label><input type="text"
+                            id="OrigemRecurso" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Classe Risco</label><input type="text"
+                            id="ClasseRiscoOperacao" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Espécie Título</label><input type="text"
+                            id="EspecieTitulo" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Ident. Op. Banco</label><input type="text"
+                            id="IdentificacaoOperacaoBanco" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Indicador Rateio</label><input type="text"
+                            id="IndicadorRateioCredito" class="form-control"></div>
+                </div>
+            </div>
+
+            <!-- GROUP: Outros Dados CNAB -->
+            <div class="info-card">
+                <div class="card-title">Outros Dados (CNAB Raw)</div>
+                <div class="form-section">
+                    <div class="form-group"><label class="form-label">Ident. Registro</label><input type="text"
+                            id="IdentificacaoRegistro" class="form-control" readonly></div>
+                    <div class="form-group"><label class="form-label">Identificação</label><input type="text"
+                            id="Identificacao" class="form-control" readonly></div>
+                    <div class="form-group"><label class="form-label">Nº Sequencial</label><input type="text"
+                            id="NumeroSequencialRegistro" class="form-control" readonly></div>
+                    <div class="form-group"><label class="form-label">Coobrigação</label><input type="text"
+                            id="Coobrigacao" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Característica Especial</label><input type="text"
+                            id="CaracteristicaEspecial" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Condição Emissão Papeleta</label><input
+                            type="text" id="CondicaoEmissaoPapeletaCobranca" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Papeleta Débito Automático</label><input
+                            type="text" id="IdentEmitePapeletaDebitoAutomatico" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Aviso Débito Automático</label><input type="text"
+                            id="EnderecamentoAvisoDebitoAutomatico" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Primeira Instrução</label><input type="text"
+                            id="PrimeiraInstrucao" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Segunda Instrução</label><input type="text"
+                            id="SegundaInstrucao" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Tipo Pessoa Cedente</label><input type="text"
+                            id="TipoPessoaCedente" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Nº Termo Cessão</label><input type="text"
+                            id="NumeroTermoCessao" class="form-control"></div>
+                </div>
+            </div>
+
+            <!-- Hidden Business Rule Fields -->
+            <input type="hidden" id="Branco1">
+            <input type="hidden" id="Branco2">
+            <input type="hidden" id="Zeros1">
+            <input type="hidden" id="Zeros2">
+        </form>
+    </div>
+
+    <script src="js/editorhandler.js"></script>
+</body>
+
+</html>
