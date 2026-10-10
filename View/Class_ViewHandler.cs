@@ -54,14 +54,17 @@ namespace ViewHandler
                         break;
 
                     case "menuTopImportarCNAB":
-                        window.Invoke(() => 
+                        window.Invoke(() =>
                         {
-                            var cnabFilters = new[] { ("Arquivo Remessa (*.rem)", new[] { "rem" }), ("Arquivo de Texto (*.txt)", new[] { "txt" }) }; 
-                            string[] filesGet = null; 
-                            try { 
-                                filesGet = window.ShowOpenFile(title: "Importar CNAB", defaultPath: string.IsNullOrEmpty(defaultPath) ? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) : defaultPath, multiSelect: false, filters: cnabFilters); 
-                            } catch (Exception ex) { 
-                                Console.WriteLine("Erro ao abrir janela: " + ex.Message); 
+                            var cnabFilters = new[] { ("Arquivos Suportados (*.rem, *.txt)", new[] { "rem", "txt" }) };
+                            string[] filesGet = [];
+                            try
+                            {
+                                filesGet = window.ShowOpenFile(title: "Importar CNAB", defaultPath: string.IsNullOrEmpty(defaultPath) ? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) : defaultPath, multiSelect: false, filters: cnabFilters);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("Erro ao abrir janela: " + ex.Message);
                             }
 
                             if (filesGet != null && filesGet.Length > 0)
@@ -91,7 +94,7 @@ namespace ViewHandler
                                     window.ShowMessage("CNAB Sync - Erro", $"Falha de Layout CNAB: {totalParcelasCNAB}", PhotinoDialogButtons.Ok, PhotinoDialogIcon.Error);
                                     return;
                                 }
-                                
+
                                 if (totalParcelasCNAB == null) { totalParcelasCNAB = "0,00"; }
                                 window.SendWebMessage($"updateTotalParcelasCNAB:{totalParcelasCNAB}");
                                 string htmlFinal = dataHandler.ListClients(clients);
