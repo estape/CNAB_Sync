@@ -10,6 +10,38 @@ namespace FileManager
 {
     public class Class_FileManager
     {
+        public string GetCnabDate(string filePath)
+        {
+            try
+            {
+                var firstLine = File.ReadLines(filePath).FirstOrDefault();
+                if (firstLine != null && firstLine.StartsWith("0"))
+                {
+                    if (firstLine.Length >= 240 && firstLine.Length < 400) // Assumes CNAB 240
+                    {
+                        if (firstLine.Length >= 151)
+                        {
+                            string datePart = firstLine.Substring(143, 8); // DDMMAAAA
+                            if (datePart.Length == 8 && int.TryParse(datePart, out _))
+                            {
+                                return $"{datePart.Substring(0, 2)}/{datePart.Substring(2, 2)}/{datePart.Substring(6, 2)}";
+                            }
+                        }
+                    }
+                    else if (firstLine.Length >= 100) // CNAB 400, 444, 500
+                    {
+                        string datePart = firstLine.Substring(94, 6); // DDMMAA
+                        if (datePart.Length == 6 && int.TryParse(datePart, out _))
+                        {
+                            return $"{datePart.Substring(0, 2)}/{datePart.Substring(2, 2)}/{datePart.Substring(4, 2)}";
+                        }
+                    }
+                }
+            }
+            catch { }
+            return "";
+        }
+
         private List<Class_Detalhe444> clientObj = new List<Class_Detalhe444>();
         
         /// <summary>

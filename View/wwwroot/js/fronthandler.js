@@ -28,6 +28,14 @@ window.external.receiveMessage(function (message) {
             totalArquivoCNAB.textContent = "R$ " + total;
         }
     }
+    
+    if (message.startsWith("UPDATE_CNAB_DATE:")) {
+        const cnabDate = message.substring("UPDATE_CNAB_DATE:".length);
+        const dateElement = document.getElementById("cnabDocumentDate");
+        if (dateElement) {
+            dateElement.textContent = cnabDate;
+        }
+    }
     if (message.startsWith("UPDATE_CLIENTS_HTML:")) {
         const clientListData = message.substring("UPDATE_CLIENTS_HTML:".length);
         const containerList = document.querySelector(".client-list");

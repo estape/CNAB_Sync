@@ -14,6 +14,7 @@ namespace ViewHandler
         (string CNABFile, string[] extensions) defaultFilter = ("Arquivos CNAB(*.txt)", new[] { "txt", "rem", "ret" });
         dynamic? clients = null;
         bool isCNAB500 = false;
+        string cnabDate = "-";
         int currentClientIndex = -1;
         private string? error;
 
@@ -97,6 +98,11 @@ namespace ViewHandler
 
                                 if (totalParcelasCNAB == null) { totalParcelasCNAB = "0,00"; }
                                 window.SendWebMessage($"updateTotalParcelasCNAB:{totalParcelasCNAB}");
+                                
+                                cnabDate = fileManager.GetCnabDate(filesGet[0]);
+                                if (string.IsNullOrEmpty(cnabDate)) cnabDate = "-";
+                                window.SendWebMessage($"UPDATE_CNAB_DATE:{cnabDate}");
+
                                 string htmlFinal = dataHandler.ListClients(clients);
                                 window.SendWebMessage($"UPDATE_CLIENTS_HTML:{htmlFinal}");
 
@@ -306,6 +312,7 @@ namespace ViewHandler
                             foreach (var c in clients) total += c.TotalParcelasCliente;
                             totalParcelasCNAB = total.ToString("N2");
                             window.SendWebMessage($"updateTotalParcelasCNAB:{totalParcelasCNAB}");
+                            window.SendWebMessage($"UPDATE_CNAB_DATE:{cnabDate}");
 
                             // If there's a selected client, we can restore its detail view
                             if (currentClientIndex >= 0 && currentClientIndex < ((System.Collections.IList)clients).Count)
