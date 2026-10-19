@@ -1,80 +1,108 @@
 # CNAB Sync
 
-CNAB Sync is a .NET application designed to manage, parse, and generate CNAB (Centro Nacional de Automação Bancária) files. This project standardizes the exchange of financial information between companies and Brazilian banks, providing strongly-typed C# models for different CNAB layouts.
+**CNAB Sync** is a modern cross-platform desktop application built on **.NET 10** and **Photino.NET** designed to parse, inspect, manage, and export Brazilian banking automation files (**CNAB** - *Centro Nacional de Automação Bancária*).
 
-## Features
+It provides a responsive web-based desktop user interface coupled with strongly-typed C# domain models, enabling financial analysts and developers to load flat-file CNAB streams, review grouped receivables, inspect contract details, and export datasets to Excel or CSV.
 
-- **CNAB 240 Support:** Includes data models for Banking Conciliation layouts (Version 5.0), mapping File Headers, Batch Headers, Detail Segments (Segment E), Batch Trailers, and File Trailers.
-- **CNAB 400 Support:** Includes data models for Bradesco Collection (Cobrança) layouts, featuring Header and Trailer records, as well as multiple transaction detail types (Type 1, Type 2, and Type 3).
-- **CNAB 444 Support:** Includes data models for CNAB 444 Remittance (Mercado) layouts (Header, Detail, Trailer) used for specific FIDC operations (FROMTIS).
-- **CNAB 500 Support:** Includes data models for CNAB 500 Remittance (FIDD) layouts (Header, Detail, Trailer) tailored for FIDC (Fundo de Investimentos em Direitos Creditórios / sinqia).
-- **Strongly Typed Models:** Maps positional flat-file string data into structured C# POCO classes to simplify read and write operations.
-- **Extensible Architecture:** Designed to easily accommodate new banks, layouts, and versions.
+---
+
+## Architecture & Technology Stack
+
+- **Platform & Runtime:** [.NET 10.0](https://dotnet.microsoft.com/) (C# 13 / Nullable reference types enabled)
+- **Desktop UI Framework:** [Photino.NET](https://www.tryphotino.io/) — lightweight native desktop window hosting a fast HTML/CSS/JavaScript webview front end without Chromium/Electron overhead.
+- **Spreadsheet Processing:** [ClosedXML](https://github.com/ClosedXML/ClosedXML) — used for generating and exporting formatted Microsoft Excel (`.xlsx`) workbooks.
+- **Front End:** Modern HTML5, modular CSS themes (Light/Dark mode support), and native asynchronous JavaScript message passing via Photino IPC.
+
+---
+
+## Key Features
+
+- **Multi-Layout Model Support:**
+  - **CNAB 240:** Banking Conciliation layout (v5.0), including File Header/Trailer, Batch Header/Trailer, and Detail (Segment E) records.
+  - **CNAB 400:** Bradesco Collection (*Cobrança*) layout, including Header, Trailer, and Detail records (Type 1, Type 2 - Messages, and Type 3 - Credit Split / Rateio).
+  - **CNAB 444:** FIDC Remittance (*Mercado / FROMTIS*) layout with full parsing and export capabilities.
+  - **CNAB 500:** FIDC Remittance (*FIDD / Sinqia*) layout supporting extended post-fixed and credit rights specifications.
+- **Intelligent Customer & Installment Grouping:** Automatically groups individual financial entries and receivables by CPF/CNPJ into cohesive customer portfolios with calculated totals.
+- **Dynamic File Date Parsing:** Automatically detects and extracts the file generation / recording date directly from the CNAB header across different layout lengths.
+- **Exporting Capabilities:**
+  - Export structured client and installment tables to formatted **Excel (`.xlsx`)** spreadsheets.
+  - Export records to delimiter-separated **CSV** files.
+  - Save and reload parsed sessions using native **`.CNABSync`** proprietary workspace files.
+- **Theme Support:** Built-in dynamic theme switcher (Light and Dark themes).
+
+---
 
 ## Project Structure
 
-The project's domain models are organized by layout size and specific transaction types:
-
 ```text
 CNAB_Sync/
-└── Model/
-    ├── 240/
-    │   ├── Class_BatchHeaderRegistration.cs
-    │   ├── Class_BatchTrailerRegistration.cs
-    │   ├── Class_DetailRegistrationSegE.cs
-    │   ├── Class_FileHeaderRegistration.cs
-    │   └── Class_FileTrailerRegistration.cs
-    ├── 400/
-    │   ├── Class_Header.cs
-    │   ├── Class_Trailer.cs
-    │   ├── Type1/
-    │   │   └── Class_DetailsType1.cs
-    │   ├── Type2/
-    │   │   └── Class_DetailsType2.cs
-    │   └── Type3/
-    │       └── Class_DetailsType3.cs
-    ├── 444/
-    │   ├── Class_Detalhe444.cs
-    │   ├── Class_Header444.cs
-    │   └── Class_Trailler444.cs
-    └── 500/
-        ├── Class_Detalhe500.cs
-        ├── Class_Header500.cs
-        └── Class_Trailler500.cs
+├── Controller/
+│   ├── Class_Core.cs            # Application state & configuration management
+│   ├── Class_DataHandler.cs     # Data formatting & HTML card generation
+│   └── Class_FileManager.cs     # CNAB parsing, validation, Excel & CSV exporters
+├── Model/
+│   ├── 240/                     # CNAB 240 Banking Conciliation models
+│   ├── 400/                     # CNAB 400 Bradesco Collection models (Type 1, 2, 3)
+│   ├── 444/                     # CNAB 444 FIDC models
+│   ├── 500/                     # CNAB 500 FIDC models
+│   └── Class_Config.cs          # User settings & layout preferences
+├── View/
+│   ├── Class_ViewHandler.cs     # Photino native window & IPC bridge
+│   └── wwwroot/                 # Desktop UI (HTML, CSS themes, JavaScript)
+│       ├── css/ (dark & light)
+│       ├── js/fronthandler.js
+│       ├── index.html
+│       └── editor.html
+├── CNAB_Sync.csproj
+├── LICENSE.md                   # MPL-2.0 and third-party dependency licenses
+├── README.md                    # Project documentation
+└── SECURITY.md                  # Security & vulnerability reporting policy
 ```
 
-## Documentation
-
-The models were generated based on official banking and FIDC documentation:
-- **Banking Conciliation Layout 240 positions Version 5.0**
-- **Manual de Procedimentos Operacionais para Troca de Arquivos (Cobrança Bradesco - CNAB 400)**
-- **CNAB 444 - REMESSA (MERCADO) - FIDC / FROMTIS**
-- **CNAB 500 - REMESSA (FIDD) - FIDC / sinqia**
+---
 
 ## Getting Started
 
-### Opening the Project
-The choice of IDE is entirely up to the developer (e.g., Visual Studio 2022+, Visual Studio Code, JetBrains Rider, etc.). 
-To open the project, simply open the root folder `CNAB_Sync` or the `CNAB_Sync.csproj` file in your preferred IDE.
-
 ### Prerequisites
-- **.NET 10.0 SDK** or later installed on your machine.
-- Since this project uses **Photino.NET** for UI and **ClosedXML**, ensure your environment can resolve NuGet packages.
+
+- [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet) or later installed.
+- Any development environment or IDE of your choice:
+  - Visual Studio 2022+ / Visual Studio Code / JetBrains Rider / Command Line (`dotnet CLI`).
 
 ### Compilation & Running
-To compile the project and restore the necessary dependencies, open your terminal at the root of the project and run:
-```bash
-dotnet build
-```
-To run the application (which will also copy the required web assets from `View/wwwroot/` to the output directory), use:
-```bash
-dotnet run
-```
 
-## Contributing
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/CNAB_Sync.git
+   cd CNAB_Sync
+   ```
 
-Feel free to open issues or submit pull requests if you want to extend support for additional banks (e.g., Itaú, Banco do Brasil, Caixa) or new CNAB segment types.
+2. **Restore dependencies & Build:**
+   ```bash
+   dotnet build
+   ```
 
-## License
+3. **Run the application:**
+   ```bash
+   dotnet run
+   ```
 
-This project is open-source and available under the MIT License.
+*Note: The build process automatically copies the UI assets located in `View/wwwroot/**/*` to the build output directory.*
+
+---
+
+## Security
+
+Please review [SECURITY.md](file:///d:/Rodrigo/Documents/Dev/vscode/Desktop/dotNET/CNAB_Sync/SECURITY.md) for vulnerability reporting guidelines and coordinated disclosure via GitHub Security Advisories.
+
+---
+
+## Licensing
+
+This project is licensed under the **Mozilla Public License Version 2.0 (MPL-2.0)**. See the [LICENSE.md](file:///d:/Rodrigo/Documents/Dev/vscode/Desktop/dotNET/CNAB_Sync/LICENSE.md) file for the complete license text.
+
+### Third-Party Component Licenses
+
+- **Photino.NET**: Distributed under the [Apache License 2.0](https://github.com/tryphotino/photino.NET/blob/master/LICENSE).
+- **ClosedXML**: Distributed under the [MIT License](https://github.com/ClosedXML/ClosedXML/blob/develop/LICENSE).
+- **Microsoft .NET Runtime**: Distributed under the [MIT License](https://github.com/dotnet/runtime/blob/main/LICENSE.TXT).
