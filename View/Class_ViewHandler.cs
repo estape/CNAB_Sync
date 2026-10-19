@@ -14,6 +14,7 @@ namespace ViewHandler
         (string CNABFile, string[] extensions) defaultFilter = ("Arquivos CNAB(*.txt)", new[] { "txt", "rem", "ret" });
         dynamic? clients = null;
         bool isCNAB500 = false;
+        string cnabDate = "-";
         int currentClientIndex = -1;
         private string? error;
 
@@ -54,14 +55,17 @@ namespace ViewHandler
                         break;
 
                     case "menuTopImportarCNAB":
-                        window.Invoke(() => 
+                        window.Invoke(() =>
                         {
-                            var cnabFilters = new[] { ("Arquivo Remessa (*.rem)", new[] { "rem" }), ("Arquivo de Texto (*.txt)", new[] { "txt" }) }; 
-                            string[] filesGet = null; 
-                            try { 
-                                filesGet = window.ShowOpenFile(title: "Importar CNAB", defaultPath: string.IsNullOrEmpty(defaultPath) ? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) : defaultPath, multiSelect: false, filters: cnabFilters); 
-                            } catch (Exception ex) { 
-                                Console.WriteLine("Erro ao abrir janela: " + ex.Message); 
+                            var cnabFilters = new[] { ("Arquivos Suportados (*.rem, *.txt)", new[] { "rem", "txt" }) };
+                            string[] filesGet = [];
+                            try
+                            {
+                                filesGet = window.ShowOpenFile(title: "Importar CNAB", defaultPath: string.IsNullOrEmpty(defaultPath) ? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) : defaultPath, multiSelect: false, filters: cnabFilters);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("Erro ao abrir janela: " + ex.Message);
                             }
 
                             if (filesGet != null && filesGet.Length > 0)
@@ -91,9 +95,14 @@ namespace ViewHandler
                                     window.ShowMessage("CNAB Sync - Erro", $"Falha de Layout CNAB: {totalParcelasCNAB}", PhotinoDialogButtons.Ok, PhotinoDialogIcon.Error);
                                     return;
                                 }
-                                
+
                                 if (totalParcelasCNAB == null) { totalParcelasCNAB = "0,00"; }
                                 window.SendWebMessage($"updateTotalParcelasCNAB:{totalParcelasCNAB}");
+                                
+                                cnabDate = fileManager.GetCnabDate(filesGet[0]);
+                                if (string.IsNullOrEmpty(cnabDate)) cnabDate = "-";
+                                window.SendWebMessage($"UPDATE_CNAB_DATE:{cnabDate}");
+
                                 string htmlFinal = dataHandler.ListClients(clients);
                                 window.SendWebMessage($"UPDATE_CLIENTS_HTML:{htmlFinal}");
 
@@ -303,6 +312,7 @@ namespace ViewHandler
                             foreach (var c in clients) total += c.TotalParcelasCliente;
                             totalParcelasCNAB = total.ToString("N2");
                             window.SendWebMessage($"updateTotalParcelasCNAB:{totalParcelasCNAB}");
+                            window.SendWebMessage($"UPDATE_CNAB_DATE:{cnabDate}");
 
                             // If there's a selected client, we can restore its detail view
                             if (currentClientIndex >= 0 && currentClientIndex < ((System.Collections.IList)clients).Count)
